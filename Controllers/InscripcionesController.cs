@@ -26,7 +26,7 @@ namespace PlataformaEscolar.API.Controllers
                 .Where(i => i.CursoId == cursoId)
                 .Select(i => new InscripcionDetalleDTO
                 {
-                    Id = i.Id, UsuarioId = i.UsuarioId, UsuarioId = i.UsuarioId, 
+                    Id = i.Id, UsuarioId = i.UsuarioId, 
                     UsuarioNombre = i.Usuario.Nombre,
                     UsuarioCorreo = i.Usuario.Correo,
                     CursoNombre = i.Curso.Nombre,
@@ -46,7 +46,7 @@ namespace PlataformaEscolar.API.Controllers
             var inscripciones = await _context.Inscripciones
                 .Select(i => new InscripcionDetalleDTO
                 {
-                    Id = i.Id, UsuarioId = i.UsuarioId, UsuarioId = i.UsuarioId, 
+                    Id = i.Id, UsuarioId = i.UsuarioId, 
                     UsuarioNombre = i.Usuario.Nombre,
                     UsuarioCorreo = i.Usuario.Correo,
                     CursoNombre = i.Curso.Nombre,
@@ -74,5 +74,6 @@ namespace PlataformaEscolar.API.Controllers
         }
     }
 }
+
 
 
