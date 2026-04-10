@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlataformaEscolar.API.Data;
@@ -30,7 +30,8 @@ namespace PlataformaEscolar.API.Controllers
                     Nombre = u.Nombre,
                     Correo = u.Correo,
                     Rol = u.Rol,
-                    CreadoEn = u.CreadoEn
+                    CreadoEn = u.CreadoEn,
+                    FotoUrl = u.FotoUrl
                 })
                 .ToListAsync();
 
@@ -50,7 +51,8 @@ namespace PlataformaEscolar.API.Controllers
                     Nombre = u.Nombre,
                     Correo = u.Correo,
                     Rol = u.Rol,
-                    CreadoEn = u.CreadoEn
+                    CreadoEn = u.CreadoEn,
+                    FotoUrl = u.FotoUrl
                 })
                 .FirstOrDefaultAsync();
 
@@ -75,7 +77,8 @@ namespace PlataformaEscolar.API.Controllers
                     Nombre = u.Nombre,
                     Correo = u.Correo,
                     Rol = u.Rol,
-                    CreadoEn = u.CreadoEn
+                    CreadoEn = u.CreadoEn,
+                    FotoUrl = u.FotoUrl
                 })
                 .FirstOrDefaultAsync();
 
@@ -84,5 +87,26 @@ namespace PlataformaEscolar.API.Controllers
 
             return Ok(usuario);
         }
+
+        // PUT: api/usuarios/perfil/foto
+        [HttpPut("perfil/foto")]
+        [Authorize]
+        public async Task<IActionResult> ActualizarFoto([FromBody] FotoUpdateDTO dto)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var usuario = await _context.Usuarios.FindAsync(userId);
+
+            if (usuario == null) return NotFound();
+
+            usuario.FotoUrl = dto.FotoUrl;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Foto actualizada", fotoUrl = usuario.FotoUrl });
+        }
+    }
+
+    public class FotoUpdateDTO
+    {
+        public string FotoUrl { get; set; }
     }
 }

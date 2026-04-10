@@ -1,4 +1,4 @@
-using System;
+Ôªøusing System;
 
 namespace PlataformaEscolar.API.Models
 {
@@ -13,25 +13,25 @@ namespace PlataformaEscolar.API.Models
         public string Correo { get; set; }
         public string PasswordHash { get; set; }
         public string Rol { get; set; } // "Profesor" o "Alumno"
-        public DateTime CreadoEn { get; set; }
+        public DateTime CreadoEn { get; set; }`n        public string? FotoUrl { get; set; }
 
         // ===== CAMPOS DE SEGURIDAD =====
         
         /// <summary>
         /// Contador de intentos fallidos de login
-        /// Se resetea despuÈs de un login exitoso
+        /// Se resetea despu√©s de un login exitoso
         /// </summary>
         public int FailedLoginAttempts { get; set; } = 0;
 
         /// <summary>
-        /// Fecha hasta la cual la cuenta est· bloqueada
-        /// Null significa que la cuenta est· desbloqueada
-        /// Bloqueada autom·ticamente despuÈs de 5 intentos fallidos
+        /// Fecha hasta la cual la cuenta est√° bloqueada
+        /// Null significa que la cuenta est√° desbloqueada
+        /// Bloqueada autom√°ticamente despu√©s de 5 intentos fallidos
         /// </summary>
         public DateTime? BloqueadoHasta { get; set; } = null;
 
         /// <summary>
-        /// Verifica si la cuenta est· actualmente bloqueada
+        /// Verifica si la cuenta est√° actualmente bloqueada
         /// </summary>
         public bool EstaBloqueado()
         {
@@ -51,3 +51,4 @@ namespace PlataformaEscolar.API.Models
         }
     }
 }
+

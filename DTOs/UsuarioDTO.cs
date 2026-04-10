@@ -6,6 +6,7 @@
         public string Nombre { get; set; }
         public string Correo { get; set; }
         public string Rol { get; set; }
-        public DateTime CreadoEn { get; set; }
+        public DateTime CreadoEn { get; set; }`n        public string? FotoUrl { get; set; }
     }
 }
+
