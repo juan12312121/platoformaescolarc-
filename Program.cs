@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+ï»¿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -27,7 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 // ========================================
-// 2. CONFIGURAR AUTENTICACIÓN JWT
+// 2. CONFIGURAR AUTENTICACIï¿½N JWT
 // ========================================
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
@@ -57,20 +57,31 @@ builder.Services.AddAuthentication(options =>
 });
 
 // ========================================
-// 3. CONFIGURAR CORS SEGURO
+// 3. CONFIGURAR CORS
+// Usamos JWT en Authorization header (no cookies),
+// por eso NO se usa AllowCredentials().
 // ========================================
-var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>()
-    ?? new[] { "http://localhost:3000", "http://localhost:5033" };
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecific", policy =>
     {
-        policy.WithOrigins(allowedOrigins)
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials()
-            .WithExposedHeaders("Content-Length", "X-JSON-Response");
+        if (allowedOrigins != null && allowedOrigins.Length > 0)
+        {
+            policy.WithOrigins(allowedOrigins)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("Content-Length", "X-JSON-Response");
+        }
+        else
+        {
+            // Sin configuracion -> permitir cualquier origen (plataforma abierta)
+            policy.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("Content-Length", "X-JSON-Response");
+        }
     });
 });
 
@@ -112,7 +123,7 @@ builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounte
 builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
 
 // ========================================
-// 5. CONFIGURAR VALIDACIÓN FLUENT
+// 5. CONFIGURAR VALIDACIï¿½N FLUENT
 // ========================================
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestDTO>();
@@ -204,7 +215,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ========================================
-// 11. INICIAR APLICACIÓN
+// 11. INICIAR APLICACIï¿½N
 // ========================================
 app.Run();
 
