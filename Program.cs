@@ -192,6 +192,7 @@ if (!app.Environment.IsDevelopment())
 app.UseIpRateLimiting();
 app.UseCors("AllowSpecific");
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
