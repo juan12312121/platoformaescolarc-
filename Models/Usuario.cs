@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace PlataformaEscolar.API.Models
 {
@@ -13,7 +13,8 @@ namespace PlataformaEscolar.API.Models
         public string Correo { get; set; }
         public string PasswordHash { get; set; }
         public string Rol { get; set; } // "Profesor" o "Alumno"
-        public DateTime CreadoEn { get; set; }`n        public string? FotoUrl { get; set; }
+        public DateTime CreadoEn { get; set; }
+        public string? FotoUrl { get; set; }
 
         // ===== CAMPOS DE SEGURIDAD =====
         

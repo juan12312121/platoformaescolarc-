@@ -1,4 +1,4 @@
-﻿namespace PlataformaEscolar.API.DTOs
+namespace PlataformaEscolar.API.DTOs
 {
     public class UsuarioDTO
     {
@@ -6,7 +6,7 @@
         public string Nombre { get; set; }
         public string Correo { get; set; }
         public string Rol { get; set; }
-        public DateTime CreadoEn { get; set; }`n        public string? FotoUrl { get; set; }
+        public DateTime CreadoEn { get; set; }
+        public string? FotoUrl { get; set; }
     }
 }
-
