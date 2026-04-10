@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+ï»¿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -34,7 +34,7 @@ namespace PlataformaEscolar.API.Controllers
         [Authorize(Roles = "Profesor")]
         public async Task<IActionResult> CrearTarea([FromBody] CrearTareaDTO request)
         {
-            // ModelState validado automáticamente
+            // ModelState validado automÃ¡ticamente
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -44,7 +44,7 @@ namespace PlataformaEscolar.API.Controllers
             logger.LogInformation("Profesor {ProfesorId} creando tarea en curso {CursoId}",
                 profesorId, request.CursoId);
 
-            // Verificar que el profesor es dueño del curso
+            // Verificar que el profesor es dueÃ±o del curso
             var curso = await context.Cursos
                 .FirstOrDefaultAsync(c => c.Id == request.CursoId && c.ProfesorId == profesorId);
 
@@ -125,9 +125,9 @@ namespace PlataformaEscolar.API.Controllers
                 {
                     id = t.Id,
                     titulo = t.Titulo,
-                    descripcion = t.Descripcion.Length > 100 
+                    descripcion = (t.Descripcion != null && t.Descripcion.Length > 100) 
                         ? t.Descripcion.Substring(0, 100) + "..." 
-                        : t.Descripcion,
+                        : (t.Descripcion ?? ""),
                     fechaEntrega = t.FechaEntrega,
                     puntajeMaximo = t.PuntajeMaximo,
                     creadoEn = t.CreadoEn
@@ -201,4 +201,5 @@ namespace PlataformaEscolar.API.Controllers
         }
     }
 }
+
 

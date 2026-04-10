@@ -12,6 +12,7 @@ namespace PlataformaEscolar.API.DTOs
     public class InscripcionDetalleDTO
     {
         public int Id { get; set; }
+        public int UsuarioId { get; set; }
         public string UsuarioNombre { get; set; }
         public string UsuarioCorreo { get; set; }
         public string CursoNombre { get; set; }

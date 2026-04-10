@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlataformaEscolar.API.Data;
@@ -26,7 +26,7 @@ namespace PlataformaEscolar.API.Controllers
                 .Where(i => i.CursoId == cursoId)
                 .Select(i => new InscripcionDetalleDTO
                 {
-                    Id = i.Id,
+                    Id = i.Id, UsuarioId = i.UsuarioId, UsuarioId = i.UsuarioId, 
                     UsuarioNombre = i.Usuario.Nombre,
                     UsuarioCorreo = i.Usuario.Correo,
                     CursoNombre = i.Curso.Nombre,
@@ -46,7 +46,7 @@ namespace PlataformaEscolar.API.Controllers
             var inscripciones = await _context.Inscripciones
                 .Select(i => new InscripcionDetalleDTO
                 {
-                    Id = i.Id,
+                    Id = i.Id, UsuarioId = i.UsuarioId, UsuarioId = i.UsuarioId, 
                     UsuarioNombre = i.Usuario.Nombre,
                     UsuarioCorreo = i.Usuario.Correo,
                     CursoNombre = i.Curso.Nombre,
@@ -65,12 +65,14 @@ namespace PlataformaEscolar.API.Controllers
         {
             var inscripcion = await _context.Inscripciones.FindAsync(id);
             if (inscripcion == null)
-                return NotFound("Inscripción no encontrada");
+                return NotFound("InscripciÃ³n no encontrada");
 
             _context.Inscripciones.Remove(inscripcion);
             await _context.SaveChangesAsync();
 
-            return Ok("Desinscripción realizada");
+            return Ok("DesinscripciÃ³n realizada");
         }
     }
 }
+
+
