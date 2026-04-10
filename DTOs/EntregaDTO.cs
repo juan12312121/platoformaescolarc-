@@ -12,6 +12,7 @@ namespace PlataformaEscolar.API.DTOs
     public class EntregaDetalleDTO
     {
         public int Id { get; set; }
+        public int TareaId { get; set; }
         public string TareaTitulo { get; set; }
         public string AlumnoNombre { get; set; }
         public string Contenido { get; set; }

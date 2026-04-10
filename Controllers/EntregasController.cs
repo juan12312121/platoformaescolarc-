@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlataformaEscolar.API.Data;
@@ -31,6 +31,7 @@ namespace PlataformaEscolar.API.Controllers
                 .Select(e => new EntregaDetalleDTO
                 {
                     Id = e.Id,
+                    TareaId = e.TareaId,
                     TareaTitulo = e.Tarea.Titulo,
                     AlumnoNombre = e.Alumno.Nombre,
                     Contenido = e.Contenido,
@@ -60,6 +61,7 @@ namespace PlataformaEscolar.API.Controllers
                 .Select(e => new EntregaDetalleDTO
                 {
                     Id = e.Id,
+                    TareaId = e.TareaId,
                     TareaTitulo = e.Tarea.Titulo,
                     AlumnoNombre = e.Alumno.Nombre,
                     Contenido = e.Contenido,
