@@ -23,8 +23,8 @@ namespace PlataformaEscolar.API.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("No se ha seleccionado ningún archivo");
 
-            // Crear carpeta si no existe
-            var uploadsPath = Path.Combine(_environment.WebRootPath ?? "wwwroot", "uploads");
+            // Crear carpeta uploads en la raíz
+            var uploadsPath = Path.Combine(_environment.ContentRootPath, "uploads");
             if (!Directory.Exists(uploadsPath))
                 Directory.CreateDirectory(uploadsPath);
 
