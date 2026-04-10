@@ -1,11 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace PlataformaEscolar.API.DTOs
 {
-    /// <summary>
-    /// DTO para crear tareas
-    /// Valida títulos, descripciones y fechas
-    /// </summary>
     public class CrearTareaDTO
     {
         [Required(ErrorMessage = "El curso es requerido")]
@@ -13,17 +10,11 @@ namespace PlataformaEscolar.API.DTOs
         public int CursoId { get; set; }
 
         [Required(ErrorMessage = "El título es requerido")]
-        [StringLength(200, MinimumLength = 5, 
-            ErrorMessage = "El título debe tener entre 5 y 200 caracteres")]
-        *$",
-            ErrorMessage = "Título contiene caracteres no permitidos")]
+        [StringLength(200, MinimumLength = 5, ErrorMessage = "El título debe tener entre 5 y 200 caracteres")]
         public string Titulo { get; set; }
 
         [Required(ErrorMessage = "La descripción es requerida")]
-        [StringLength(2000, MinimumLength = 10, 
-            ErrorMessage = "La descripción debe tener entre 10 y 2000 caracteres")]
-        *$",
-            ErrorMessage = "Descripción contiene caracteres no permitidos")]
+        [StringLength(2000, MinimumLength = 10, ErrorMessage = "La descripción debe tener entre 10 y 2000 caracteres")]
         public string Descripcion { get; set; }
 
         [Required(ErrorMessage = "La fecha de entrega es requerida")]
@@ -34,4 +25,3 @@ namespace PlataformaEscolar.API.DTOs
         public decimal PuntajeMaximo { get; set; }
     }
 }
-
