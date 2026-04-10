@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -217,6 +217,19 @@ using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         context.Database.EnsureCreated();
+
+        // Hack para asegurar que la columna FotoUrl exista en Usuarios
+        try {
+            var conn = context.Database.GetDbConnection();
+            if (conn.State != System.Data.ConnectionState.Open) conn.Open();
+            using (var cmd = conn.CreateCommand()) {
+                cmd.CommandText = "ALTER TABLE Usuarios ADD COLUMN FotoUrl LONGTEXT NULL;";
+                cmd.ExecuteNonQuery();
+            }
+        } catch(Exception ex) {
+            // Ignorarlo, la columna muy probablemente ya existe
+            Console.WriteLine($"Nota: La columna FotoUrl ya existe o fallo al crear: {ex.Message}");
+        }
 
         // Hack para asegurar que la tabla Anuncios se crea (ya que EnsureCreated no actualiza tablas nuevas)
         try {
