@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlataformaEscolar.API.Data;
@@ -31,7 +31,7 @@ namespace PlataformaEscolar.API.Controllers
                 .Select(e => new EntregaDetalleDTO
                 {
                     Id = e.Id,
-                    TareaId = e.TareaId,
+                    TareaId = e.TareaId, AlumnoId = e.AlumnoId,
                     TareaTitulo = e.Tarea.Titulo,
                     AlumnoNombre = e.Alumno.Nombre,
                     Contenido = e.Contenido,
@@ -61,7 +61,7 @@ namespace PlataformaEscolar.API.Controllers
                 .Select(e => new EntregaDetalleDTO
                 {
                     Id = e.Id,
-                    TareaId = e.TareaId,
+                    TareaId = e.TareaId, AlumnoId = e.AlumnoId,
                     TareaTitulo = e.Tarea.Titulo,
                     AlumnoNombre = e.Alumno.Nombre,
                     Contenido = e.Contenido,
@@ -123,7 +123,7 @@ namespace PlataformaEscolar.API.Controllers
             if (entrega == null) return NotFound();
             if (entrega.AlumnoId != userId) return Forbid();
 
-            // Si ya tiene calificación, no se puede anular
+            // Si ya tiene calificaciÃ³n, no se puede anular
             var tieneCalificacion = await _context.Calificaciones.AnyAsync(c => c.EntregaId == id);
             if (tieneCalificacion) return BadRequest("No puedes anular una tarea ya calificada");
 
@@ -134,3 +134,4 @@ namespace PlataformaEscolar.API.Controllers
         }
     }
 }
+
