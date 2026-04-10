@@ -109,7 +109,25 @@ namespace PlataformaEscolar.API.Controllers
             _context.Entregas.Add(entrega);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetMisEntregas), new { id = entrega.Id }, entrega);
+        // DELETE: api/entregas/{id} (anular entrega - solo Alumno)
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Alumno")]
+        public async Task<IActionResult> AnularEntrega(int id)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
+            var entrega = await _context.Entregas.FindAsync(id);
+
+            if (entrega == null) return NotFound();
+            if (entrega.AlumnoId != userId) return Forbid();
+
+            // Si ya tiene calificación, no se puede anular
+            var tieneCalificacion = await _context.Calificaciones.AnyAsync(c => c.EntregaId == id);
+            if (tieneCalificacion) return BadRequest("No puedes anular una tarea ya calificada");
+
+            _context.Entregas.Remove(entrega);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
