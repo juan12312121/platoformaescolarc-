@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PlataformaEscolar.API.Data;
@@ -19,7 +19,7 @@ namespace PlataformaEscolar.API.Controllers
 
         // GET: api/inscripciones/curso/{cursoId} (listar alumnos inscritos)
         [HttpGet("curso/{cursoId}")]
-        [Authorize(Roles = "Profesor,Admin")]
+        [Authorize(Roles = "Profesor,Alumno,Admin")]
         public async Task<ActionResult<IEnumerable<InscripcionDetalleDTO>>> GetInscripcionesPorCurso(int cursoId)
         {
             var inscripciones = await _context.Inscripciones
