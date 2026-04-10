@@ -37,65 +37,40 @@ namespace PlataformaEscolar.API.Controllers
             int entregaId,
             [FromBody] CrearCalificacionDTO request)
         {
-            // ModelState validado automáticamente
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var profesorId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var profesorEmail = User.FindFirst(ClaimTypes.Email).Value;
 
-            logger.LogInformation("Profesor {ProfesorId} calificando entrega {EntregaId}",
-                profesorId, entregaId);
-
-            // Verificar que la entrega existe
             var entrega = await context.Entregas
                 .Include(e => e.Tarea)
                 .FirstOrDefaultAsync(e => e.Id == entregaId);
 
             if (entrega == null)
-            {
-                logger.LogWarning("Intento de calificar entrega inexistente: {EntregaId}", entregaId);
                 return NotFound(new { error = "Entrega no encontrada" });
-            }
 
             // Verificar que el profesor es dueño del curso
-            var esProfesorDelCurso = await context.Inscripciones
-                .AnyAsync(i => i.CursoId == entrega.Tarea.CursoId && 
-                              i.UsuarioId == profesorId && 
-                              i.Rol == "Profesor");
-
-            if (!esProfesorDelCurso)
+            var curso = await context.Cursos.FindAsync(entrega.Tarea.CursoId);
+            if (curso == null || curso.ProfesorId != profesorId)
             {
-                logger.LogWarning("Profesor {ProfesorId} intenta calificar sin permisos en curso {CursoId}",
+                logger.LogWarning("Profesor {ProfesorId} intenta calificar sin ser dueño del curso {CursoId}",
                     profesorId, entrega.Tarea.CursoId);
                 return Forbid();
             }
 
-            // Verificar si ya existe calificación
             var calificacionExistente = await context.Calificaciones
                 .FirstOrDefaultAsync(c => c.EntregaId == entregaId);
 
             if (calificacionExistente != null)
             {
-                // Actualizar calificación existente
                 calificacionExistente.Puntaje = request.Puntaje;
                 calificacionExistente.Retroalimentacion = request.Retroalimentacion?.Trim() ?? "";
                 calificacionExistente.CalificadoEn = DateTime.UtcNow;
-
-                try
-                {
-                    await context.SaveChangesAsync();
-                    logger.LogInformation("Calificación actualizada: {CalificacionId}", calificacionExistente.Id);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Error actualizando calificación");
-                    return StatusCode(500, new { error = "Error al actualizar calificación" });
-                }
+                await context.SaveChangesAsync();
             }
             else
             {
-                // Crear nueva calificación
                 var calificacion = new Calificacion
                 {
                     EntregaId = entregaId,
@@ -103,22 +78,11 @@ namespace PlataformaEscolar.API.Controllers
                     Retroalimentacion = request.Retroalimentacion?.Trim() ?? "",
                     CalificadoEn = DateTime.UtcNow
                 };
-
-                try
-                {
-                    await context.Calificaciones.AddAsync(calificacion);
-                    await context.SaveChangesAsync();
-
-                    logger.LogInformation("Calificación creada: {CalificacionId}", calificacion.Id);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Error creando calificación");
-                    return StatusCode(500, new { error = "Error al crear calificación" });
-                }
+                await context.Calificaciones.AddAsync(calificacion);
+                await context.SaveChangesAsync();
             }
 
-            // Crear notificación para el alumno
+            // Notificación
             var notificacion = new Notificacion
             {
                 UsuarioId = entrega.AlumnoId,
@@ -127,19 +91,12 @@ namespace PlataformaEscolar.API.Controllers
                 Leida = false,
                 CreadoEn = DateTime.UtcNow
             };
-
             await context.Notificaciones.AddAsync(notificacion);
             await context.SaveChangesAsync();
 
-            securityLogger.LogSensitiveDataAccess(
-                profesorEmail, "CALIFICAR_ENTREGA", $"ENTREGA_{entregaId}");
+            securityLogger.LogSensitiveDataAccess(profesorEmail, "CALIFICAR_ENTREGA", $"ENTREGA_{entregaId}");
 
-            return Ok(new
-            {
-                mensaje = "Entrega calificada exitosamente",
-                puntaje = request.Puntaje,
-                retroalimentacion = request.Retroalimentacion
-            });
+            return Ok(new { mensaje = "Entrega calificada exitosamente", puntaje = request.Puntaje });
         }
 
         /// <summary>
@@ -149,38 +106,20 @@ namespace PlataformaEscolar.API.Controllers
         public async Task<IActionResult> ObtenerCalificacion(int entregaId)
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var entrega = await context.Entregas.AsNoTracking().FirstOrDefaultAsync(e => e.Id == entregaId);
 
-            var entrega = await context.Entregas
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == entregaId);
+            if (entrega == null) return NotFound(new { error = "Entrega no encontrada" });
 
-            if (entrega == null)
-                return NotFound(new { error = "Entrega no encontrada" });
-
-            // El alumno solo puede ver su propia calificación
             if (entrega.AlumnoId != userId)
             {
                 var userRole = User.FindFirst(ClaimTypes.Role).Value;
-                if (userRole != "Profesor")
-                {
-                    return Forbid();
-                }
+                if (userRole != "Profesor") return Forbid();
             }
 
-            var calificacion = await context.Calificaciones
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.EntregaId == entregaId);
+            var calificacion = await context.Calificaciones.AsNoTracking().FirstOrDefaultAsync(c => c.EntregaId == entregaId);
+            if (calificacion == null) return Ok(new { mensaje = "Entrega aún no calificada" });
 
-            if (calificacion == null)
-                return Ok(new { mensaje = "Entrega aún no calificada" });
-
-            return Ok(new
-            {
-                id = calificacion.Id,
-                puntaje = calificacion.Puntaje,
-                retroalimentacion = calificacion.Retroalimentacion,
-                calificadoEn = calificacion.CalificadoEn
-            });
+            return Ok(new { id = calificacion.Id, puntaje = calificacion.Puntaje, retroalimentacion = calificacion.Retroalimentacion, calificadoEn = calificacion.CalificadoEn });
         }
 
         /// <summary>
@@ -190,15 +129,12 @@ namespace PlataformaEscolar.API.Controllers
         public async Task<IActionResult> ObtenerMisCalificaciones()
         {
             var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
             var calificaciones = await context.Calificaciones
                 .AsNoTracking()
-                .Include(c => c.Entrega)
-                .ThenInclude(e => e.Tarea)
+                .Include(c => c.Entrega).ThenInclude(e => e.Tarea)
                 .Where(c => c.Entrega.AlumnoId == userId)
                 .OrderByDescending(c => c.CalificadoEn)
-                .Select(c => new
-                {
+                .Select(c => new {
                     id = c.Id,
                     tarea = c.Entrega.Tarea.Titulo,
                     puntaje = c.Puntaje,
@@ -212,5 +148,3 @@ namespace PlataformaEscolar.API.Controllers
         }
     }
 }
-
-
