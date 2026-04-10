@@ -109,6 +109,9 @@ namespace PlataformaEscolar.API.Controllers
             _context.Entregas.Add(entrega);
             await _context.SaveChangesAsync();
 
+            return CreatedAtAction(nameof(GetMisEntregas), new { id = entrega.Id }, entrega);
+        }
+
         // DELETE: api/entregas/{id} (anular entrega - solo Alumno)
         [HttpDelete("{id}")]
         [Authorize(Roles = "Alumno")]
