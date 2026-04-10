@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PlataformaEscolar.API.Models;
 
 namespace PlataformaEscolar.API.Data
@@ -14,6 +14,7 @@ namespace PlataformaEscolar.API.Data
         public DbSet<Entrega> Entregas { get; set; }
         public DbSet<Calificacion> Calificaciones { get; set; }
         public DbSet<Comentario> Comentarios { get; set; }
+        public DbSet<Anuncio> Anuncios { get; set; }
         public DbSet<Notificacion> Notificaciones { get; set; } // ✅ agregado
         public DbSet<Archivo> Archivos { get; set; }             // opcional según BD
         public DbSet<TareaArchivo> TareaArchivos { get; set; }   // opcional
