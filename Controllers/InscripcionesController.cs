@@ -28,7 +28,7 @@ namespace PlataformaEscolar.API.Controllers
                 {
                     Id = i.Id,
                     UsuarioNombre = i.Usuario.Nombre,
-                    UsuarioCorreo = i.Usuario.Email,
+                    UsuarioCorreo = i.Usuario.Correo,
                     CursoNombre = i.Curso.Nombre,
                     Rol = i.Rol,
                     CreadoEn = i.CreadoEn
@@ -48,7 +48,7 @@ namespace PlataformaEscolar.API.Controllers
                 {
                     Id = i.Id,
                     UsuarioNombre = i.Usuario.Nombre,
-                    UsuarioCorreo = i.Usuario.Email,
+                    UsuarioCorreo = i.Usuario.Correo,
                     CursoNombre = i.Curso.Nombre,
                     Rol = i.Rol,
                     CreadoEn = i.CreadoEn
