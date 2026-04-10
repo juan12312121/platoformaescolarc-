@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
 using System;
@@ -21,9 +21,9 @@ namespace PlataformaEscolar.API.Controllers
         public async Task<IActionResult> Upload(IFormFile file)
         {
             if (file == null || file.Length == 0)
-                return BadRequest("No se ha seleccionado ningún archivo");
+                return BadRequest("No se ha seleccionado ningÃºn archivo");
 
-            // Crear carpeta uploads en la raíz
+            // Crear carpeta uploads en la raÃ­z
             var uploadsPath = Path.Combine(_environment.ContentRootPath, "uploads");
             if (!Directory.Exists(uploadsPath))
                 Directory.CreateDirectory(uploadsPath);
@@ -41,3 +41,5 @@ namespace PlataformaEscolar.API.Controllers
         }
     }
 }
+
+

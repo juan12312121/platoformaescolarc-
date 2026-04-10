@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -27,7 +27,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 // ========================================
-// 2. CONFIGURAR AUTENTICACI�N JWT
+// 2. CONFIGURAR AUTENTICACIï¿½N JWT
 // ========================================
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrEmpty(jwtKey) || jwtKey.Length < 32)
@@ -123,7 +123,7 @@ builder.Services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounte
 builder.Services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
 
 // ========================================
-// 5. CONFIGURAR VALIDACI�N FLUENT
+// 5. CONFIGURAR VALIDACIï¿½N FLUENT
 // ========================================
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterRequestDTO>();
@@ -248,7 +248,9 @@ using (var scope = app.Services.CreateScope())
 }
 
 // ========================================
-// 11. INICIAR APLICACI�N
+// 11. INICIAR APLICACIï¿½N
 // ========================================
 app.Run();
+
+
 
