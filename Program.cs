@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -206,6 +206,28 @@ using (var scope = app.Services.CreateScope())
     {
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         context.Database.EnsureCreated();
+
+        // Hack para asegurar que la tabla Anuncios se crea (ya que EnsureCreated no actualiza tablas nuevas)
+        try {
+            var conn = context.Database.GetDbConnection();
+            if (conn.State != System.Data.ConnectionState.Open) conn.Open();
+            using (var cmd = conn.CreateCommand()) {
+                cmd.CommandText = @"
+                    CREATE TABLE IF NOT EXISTS Anuncios (
+                        Id INT AUTO_INCREMENT PRIMARY KEY,
+                        UsuarioId INT NOT NULL,
+                        CursoId INT NOT NULL,
+                        Contenido LONGTEXT NOT NULL,
+                        CreadoEn DATETIME NOT NULL,
+                        CONSTRAINT FK_Anuncios_Usuarios FOREIGN KEY (UsuarioId) REFERENCES Usuarios(Id) ON DELETE CASCADE,
+                        CONSTRAINT FK_Anuncios_Cursos FOREIGN KEY (CursoId) REFERENCES Cursos(Id) ON DELETE CASCADE
+                    );";
+                cmd.ExecuteNonQuery();
+            }
+        } catch(Exception ex) {
+            Console.WriteLine($"Nota: La tabla Anuncios ya existe o no se pudo crear: {ex.Message}");
+        }
+
         Console.WriteLine("Base de datos verificada/creada");
     }
     catch (Exception ex)
